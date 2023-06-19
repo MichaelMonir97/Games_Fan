@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import apiClient from "../services/api-client";
-import { CanceledError } from "axios";
+import { AxiosRequestConfig, CanceledError } from "axios";
 
 
 
@@ -9,7 +9,7 @@ interface FetchResult<T>{
     results: T[]
 }
 
-const useData = <T>(endpoint: string)=>{
+const useData = <T>(endpoint: string,requestedParams?: AxiosRequestConfig, deps?: any[])=>{
     const [data, setData] = useState<T[]>([]);
     const [error, setError] = useState("");
     const [isLoading, setLoading] = useState(false)
@@ -17,7 +17,7 @@ const useData = <T>(endpoint: string)=>{
     const abort = new AbortController()
       setLoading(true)
       apiClient
-        .get<FetchResult<T>>(endpoint,{signal: abort.signal})
+        .get<FetchResult<T>>(endpoint,{signal: abort.signal, ...requestedParams})
         .then((resp) => {
           setLoading(false)
           setData(resp.data.results)})
@@ -28,9 +28,9 @@ const useData = <T>(endpoint: string)=>{
         });
 
     return () => abort.abort()
-    }, []);
+    }, deps ? [...deps] : [] );
 
-    return { data, error,isLoading}
+    return { data, setData,error,isLoading}
 }
 
 
