@@ -5,9 +5,14 @@ import GameGrid from "./components/GameGrid";
 import Genres from "./components/Genres";
 import { useState } from "react";
 import { Genre } from "./components/hooks/useGenre";
+import PlatFormSelector from "./components/PlatFormSelector";
+import { PlatForms } from "./components/hooks/usePlatForm";
 
 function App() {
   const [selectedGenre, setSelectedGenre] = useState<Genre | null>(null);
+  const [selectedPlatform, setSelectedPlatform] = useState<PlatForms | null>(
+    null
+  );
   return (
     <Grid
       templateAreas={{
@@ -33,7 +38,14 @@ function App() {
       </Show>
 
       <GridItem area={"main"}>
-        <GameGrid selectedGenre={selectedGenre} />
+        <PlatFormSelector
+          onSelectPlatform={(platform) => setSelectedPlatform(platform)}
+          selectedPlatform={selectedPlatform}
+        />
+        <GameGrid
+          selectedGenre={selectedGenre}
+          selectedPlatform={selectedPlatform}
+        />
       </GridItem>
     </Grid>
   );
